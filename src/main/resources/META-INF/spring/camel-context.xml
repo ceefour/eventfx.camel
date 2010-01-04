@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+		http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<context:component-scan base-package="com.soluvas.samples.eventfx.camel" />
+
+	<bean class="com.soluvas.samples.eventfx.camel.Sensor">
+		<property name="sensorSyncListener">
+			<bean class="org.apache.camel.spring.remoting.CamelProxyFactoryBean">
+			  <property name="serviceUrl" value="seda:Sensor.SensorEventSync"/>
+			  <property name="serviceInterface" value="com.soluvas.samples.eventfx.camel.SyncListener"/>
+			</bean>
+		</property>
+		<property name="sensorAsyncListener">
+			<bean class="org.apache.camel.spring.remoting.CamelProxyFactoryBean">
+			  <property name="serviceUrl" value="seda:Sensor.SensorEventAsync"/>
+			  <property name="serviceInterface" value="com.soluvas.samples.eventfx.camel.AsyncListener"/>
+			</bean>
+		</property>
+	</bean>
+	<bean id="display1" class="com.soluvas.samples.eventfx.camel.Display">
+		<property name="name" value="Sony(sync)" />
+	</bean>
+	<bean id="display2" class="com.soluvas.samples.eventfx.camel.Display">
+		<property name="name" value="Samsung(async)" />
+	</bean>
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<packageScan>
+			<package>com.soluvas.samples.eventfx.camel</package>
+		</packageScan>
+	</camelContext>
+
+</beans>
